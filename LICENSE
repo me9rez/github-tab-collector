@@ -1,0 +1,33 @@
+MIT License
+
+Copyright (c) 2026 陶建行 (me9rez)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+本项目内置的像素字体属于第三方作品，适用其各自许可（不适用本文件的 MIT）：
+
+- Fusion Pixel 12px —— SIL Open Font License 1.1
+  许可文件：`extension/fonts/OFL.txt`
+- Ark Pixel —— SIL Open Font License 1.1（`extension/fonts/LICENSES/ark-pixel/OFL.txt`）
+- Cubic 11 —— SIL Open Font License 1.1（`extension/fonts/LICENSES/cubic-11/OFL.txt`）
+- Galmuri —— 随附许可文件（`extension/fonts/LICENSES/galmuri/LICENSE.txt`）
+
+字体文件本身不适用本 MIT 许可，请以各字体目录内的许可文件为准。

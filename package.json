@@ -1,0 +1,16 @@
+{
+  "name": "github-tab-collector",
+  "version": "1.0.0",
+  "private": true,
+  "description": "把浏览器中打开的 GitHub 项目链接同步给外部 Agent 的浏览器扩展 + 本地中继 + MCP 服务",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "relay": "node relay/server.mjs",
+    "test": "node test/smoke.mjs && node test/mcp-smoke.mjs",
+    "test:relay": "node test/smoke.mjs",
+    "test:mcp": "node test/mcp-smoke.mjs"
+  }
+}

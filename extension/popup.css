@@ -1,0 +1,115 @@
+/* popup 专属布局 */
+
+body {
+  width: 400px;
+  padding: 8px;
+  padding-bottom: 10px;
+}
+
+.gb-bar {
+  margin-bottom: 8px;
+}
+
+.gb-bar .title {
+  letter-spacing: 2px;
+}
+
+.gb-bar .url {
+  color: var(--gb-mid);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.gb-section {
+  margin-bottom: 8px;
+}
+
+/* 统计区 */
+.gb-stats {
+  margin-bottom: 8px;
+}
+
+/* 操作按钮条 */
+.gb-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.gb-actions .gb-btn {
+  flex: 1;
+  text-align: center;
+  padding: 3px 4px;
+}
+
+/* 列表区 */
+.gb-list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  color: var(--gb-mid);
+  letter-spacing: 1px;
+}
+
+.gb-list-head a {
+  color: var(--gb-magenta);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.gb-list-head a:hover {
+  text-decoration: underline;
+}
+
+details.gb-more {
+  margin-top: 6px;
+}
+
+details.gb-more > summary {
+  cursor: pointer;
+  color: var(--gb-mid);
+  letter-spacing: 1px;
+  list-style: none;
+}
+
+details.gb-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.gb-more > summary::before {
+  content: '▸ ';
+  color: var(--gb-magenta);
+}
+
+details.gb-more[open] > summary::before {
+  content: '▾ ';
+}
+
+/* 底部状态栏 */
+.gb-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: var(--gb-ink);
+  color: var(--gb-light);
+}
+
+.gb-foot .t {
+  color: var(--gb-mid);
+}
+
+.gb-foot a {
+  color: var(--gb-gold);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.gb-foot a:hover {
+  text-decoration: underline;
+}

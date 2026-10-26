@@ -1,0 +1,573 @@
+/* ==========================================================================
+   GitHub Tab Collector — 像素游戏主题（Game Boy / 口袋妖怪风）
+   字体：Fusion Pixel 12px（缝合像素字体，MIT + OFL，可商用）
+   ========================================================================== */
+
+/* ---------- 字体 ---------- */
+
+@font-face {
+  font-family: 'Fusion Pixel';
+  src: url('fonts/fusion-pixel-12px-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Fusion Pixel';
+  src: url('fonts/fusion-pixel-12px-zh_hans.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+  unicode-range: U+2000-206F, U+20A0-20AB, U+2113, U+2C60-2C7F, U+A720-A7FF,
+    U+3000-303F, U+3200-32FF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE10-FE1F,
+    U+FE30-FE4F, U+FF00-FFEF;
+}
+
+/* ---------- 调色板（DMG-01 掌机） ---------- */
+
+:root {
+  --gb-shell: #c4bfb0;      /* 机身外壳 */
+  --gb-panel: #dbd6c4;      /* 面板 */
+  --gb-light: #efecdc;      /* 高光 */
+  --gb-mid: #8b8776;        /* 中间调 */
+  --gb-ink: #2b2a24;        /* 描边与正文 */
+  --gb-green: #4d7c3f;      /* 生命值绿 */
+  --gb-red: #b04a3a;        /* 危险红 */
+  --gb-gold: #c9a227;       /* 强调金 */
+  --gb-magenta: #a3346e;    /* 状态品红 */
+
+  --shadow: 3px 3px 0 var(--gb-ink);
+  --shadow-lg: 4px 4px 0 var(--gb-ink);
+
+  /* 像素箭头：4 段纯色条，靠 background-size / background-position 排成阶梯三角 */
+  --gb-arrow:
+    linear-gradient(var(--gb-ink), var(--gb-ink)),
+    linear-gradient(var(--gb-ink), var(--gb-ink)),
+    linear-gradient(var(--gb-ink), var(--gb-ink)),
+    linear-gradient(var(--gb-ink), var(--gb-ink));
+}
+
+/* ---------- 基础 ---------- */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--gb-shell);
+  color: var(--gb-ink);
+  font-family: 'Fusion Pixel', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 12px;
+  line-height: 18px;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  text-rendering: geometricPrecision;
+}
+
+/* 掌机网格底纹 */
+body {
+  background-image:
+    repeating-linear-gradient(0deg, rgba(43, 42, 36, 0.05) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(90deg, rgba(43, 42, 36, 0.05) 0 1px, transparent 1px 6px);
+}
+
+a {
+  color: var(--gb-ink);
+}
+
+/* ---------- 窗口（分区框） ---------- */
+
+.gb-window {
+  background: var(--gb-panel);
+  border: 2px solid var(--gb-ink);
+  box-shadow: var(--shadow-lg);
+}
+
+.gb-window > .gb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--gb-ink);
+  color: var(--gb-light);
+  padding: 3px 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.gb-window > .gb-head .sub {
+  color: var(--gb-mid);
+  font-size: 12px;
+}
+
+.gb-body {
+  padding: 10px;
+}
+
+/* ---------- 标题栏 ---------- */
+
+.gb-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gb-ink);
+  color: var(--gb-light);
+  padding: 6px 10px;
+  letter-spacing: 1px;
+}
+
+.gb-bar .grow {
+  flex: 1;
+}
+
+/* 方形指示灯 */
+.gb-led {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border: 2px solid var(--gb-light);
+  background: var(--gb-mid);
+}
+
+.gb-led.ok { background: var(--gb-green); }
+.gb-led.err { background: var(--gb-red); }
+.gb-led.idle { background: var(--gb-gold); }
+
+/* ---------- 按钮 ---------- */
+
+.gb-btn {
+  display: inline-block;
+  font: inherit;
+  font-family: inherit;
+  line-height: 18px;
+  color: var(--gb-ink);
+  background: var(--gb-light);
+  border: 2px solid var(--gb-ink);
+  box-shadow: var(--shadow);
+  padding: 3px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  user-select: none;
+  text-decoration: none;
+}
+
+.gb-btn:hover {
+  background: #fff;
+}
+
+.gb-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--gb-ink);
+}
+
+.gb-btn.primary {
+  background: var(--gb-green);
+  color: #fff;
+}
+
+.gb-btn.primary:hover {
+  background: #5d8f4c;
+}
+
+.gb-btn.magenta {
+  background: var(--gb-magenta);
+  color: #fff;
+}
+
+.gb-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* 锚点形态的按钮（打开中继面板）不可用时的样子 */
+.gb-btn.off {
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---------- 数值面板 ---------- */
+
+.gb-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.gb-stat {
+  background: var(--gb-light);
+  border: 2px solid var(--gb-ink);
+  padding: 3px 4px 4px;
+  min-width: 0;
+}
+
+.gb-stat .n {
+  font-size: 24px;
+  line-height: 24px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.gb-stat .l {
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--gb-mid);
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gb-stat.hot .n { color: var(--gb-red); }
+.gb-stat.warm .n { color: var(--gb-gold); }
+.gb-stat.cool .n { color: var(--gb-green); }
+
+/* 血条 */
+.gb-bar-track {
+  height: 10px;
+  border: 2px solid var(--gb-ink);
+  background: var(--gb-shell);
+  margin-top: 4px;
+}
+
+.gb-bar-track > i {
+  display: block;
+  height: 100%;
+  background: var(--gb-green);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.18) 0 2px,
+    transparent 2px 4px
+  );
+}
+
+.gb-bar-track > i.low { background-color: var(--gb-red); }
+.gb-bar-track > i.mid { background-color: var(--gb-gold); }
+
+/* ---------- 列表 ---------- */
+
+.gb-list {
+  list-style: none;
+  border: 2px solid var(--gb-ink);
+  background: var(--gb-light);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.gb-list li {
+  padding: 3px 6px;
+  border-bottom: 2px solid var(--gb-mid);
+}
+
+.gb-list li:last-child {
+  border-bottom: none;
+}
+
+.gb-list li:nth-child(even) {
+  background: rgba(43, 42, 36, 0.04);
+}
+
+.gb-list .row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.gb-list .name {
+  font-weight: normal;
+  color: var(--gb-ink);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.gb-list .name:hover {
+  color: var(--gb-magenta);
+}
+
+.gb-list .meta {
+  color: var(--gb-mid);
+  font-size: 12px;
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gb-caret {
+  color: var(--gb-magenta);
+  flex: none;
+}
+
+.gb-empty {
+  padding: 14px 8px;
+  color: var(--gb-mid);
+  text-align: center;
+}
+
+/* 标签 */
+.gb-tag {
+  display: inline-block;
+  border: 2px solid var(--gb-ink);
+  background: var(--gb-gold);
+  color: var(--gb-ink);
+  padding: 0 4px;
+  font-size: 12px;
+  line-height: 16px;
+  flex: none;
+}
+
+.gb-tag.issue { background: var(--gb-green); color: #fff; }
+.gb-tag.pull { background: var(--gb-magenta); color: #fff; }
+.gb-tag.file { background: var(--gb-mid); color: #fff; }
+
+/* ---------- 表单 ---------- */
+
+.gb-field {
+  margin-bottom: 14px;
+}
+
+.gb-field > label,
+.gb-field > .lb {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gb-mid);
+  letter-spacing: 1px;
+}
+
+.gb-input {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-family: inherit;
+  line-height: 18px;
+  color: var(--gb-ink);
+  background: var(--gb-light);
+  border: 2px solid var(--gb-ink);
+  box-shadow: inset 2px 2px 0 var(--gb-mid);
+  padding: 4px 6px;
+}
+
+.gb-input:focus {
+  outline: none;
+  box-shadow: inset 2px 2px 0 var(--gb-mid), 0 0 0 2px var(--gb-green);
+}
+
+textarea.gb-input {
+  resize: vertical;
+  min-height: 78px;
+  line-height: 18px;
+}
+
+/* 像素复选框 */
+.gb-switch {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.gb-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.gb-box {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border: 2px solid var(--gb-ink);
+  background: var(--gb-light);
+  position: relative;
+  margin-top: 1px;
+}
+
+.gb-switch input:checked + .gb-box {
+  background: var(--gb-green);
+}
+
+.gb-switch input:checked + .gb-box::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0;
+  width: 5px;
+  height: 10px;
+  border: solid var(--gb-light);
+  border-width: 0 3px 3px 0;
+  transform: rotate(42deg);
+}
+
+.gb-switch input:focus-visible + .gb-box {
+  box-shadow: 0 0 0 2px var(--gb-gold);
+}
+
+/* ---------- 提示条 ---------- */
+
+.gb-note {
+  margin-top: 4px;
+  color: var(--gb-mid);
+  font-size: 12px;
+}
+
+.gb-flash {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 2px solid var(--gb-ink);
+  background: var(--gb-green);
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.gb-flash.err {
+  background: var(--gb-red);
+}
+
+.gb-flash.hide {
+  visibility: hidden;
+}
+
+/* ---------- 滚动条（掌机风） ---------- */
+
+::-webkit-scrollbar {
+  width: 20px;
+  height: 20px;
+}
+
+/* 轨道：抖动点阵 */
+::-webkit-scrollbar-track {
+  background-color: var(--gb-shell);
+  background-image:
+    repeating-conic-gradient(rgba(43, 42, 36, 0.12) 0 25%, transparent 0 50%);
+  background-size: 4px 4px;
+  border-left: 2px solid var(--gb-ink);
+  border-top: 2px solid var(--gb-ink);
+}
+
+/* 滑块：厚边框 + 立体高光 + 三道抓握纹 */
+::-webkit-scrollbar-thumb {
+  background-color: var(--gb-mid);
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 4px,
+    rgba(43, 42, 36, 0.32) 4px 6px
+  );
+  border: 2px solid var(--gb-ink);
+  box-shadow:
+    inset 2px 2px 0 rgba(239, 236, 220, 0.4),
+    inset -2px -2px 0 rgba(43, 42, 36, 0.28);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9d9988;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--gb-green);
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 4px,
+    rgba(239, 236, 220, 0.35) 4px 6px
+  );
+  box-shadow: inset 2px 2px 0 rgba(43, 42, 36, 0.3);
+}
+
+/* 两端的箭头按钮 */
+::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: var(--gb-light);
+  border: 2px solid var(--gb-ink);
+  box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.55);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+::-webkit-scrollbar-button:single-button:hover {
+  background-color: #fff;
+}
+
+::-webkit-scrollbar-button:single-button:active {
+  background-color: var(--gb-gold);
+  box-shadow: inset 2px 2px 0 rgba(43, 42, 36, 0.25);
+}
+
+/* 上箭头：宽 1 → 3 → 5 → 7，顶点在上 */
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: var(--gb-arrow);
+  background-size: 1px 2px, 3px 2px, 5px 2px, 7px 2px;
+  background-position:
+    center calc(50% - 4px),
+    center calc(50% - 2px),
+    center 50%,
+    center calc(50% + 2px);
+}
+
+/* 下箭头：宽 7 → 5 → 3 → 1，顶点在下 */
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: var(--gb-arrow);
+  background-size: 7px 2px, 5px 2px, 3px 2px, 1px 2px;
+  background-position:
+    center calc(50% - 4px),
+    center calc(50% - 2px),
+    center 50%,
+    center calc(50% + 2px);
+}
+
+/* 左箭头：竖条高 7 → 5 → 3 → 1，顶点在左 */
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-image: var(--gb-arrow);
+  background-size: 2px 7px, 2px 5px, 2px 3px, 2px 1px;
+  background-position:
+    calc(50% - 4px) center,
+    calc(50% - 2px) center,
+    50% center,
+    calc(50% + 2px) center;
+}
+
+/* 右箭头：竖条高 1 → 3 → 5 → 7，顶点在右 */
+::-webkit-scrollbar-button:single-button:horizontal:increment {
+  background-image: var(--gb-arrow);
+  background-size: 2px 1px, 2px 3px, 2px 5px, 2px 7px;
+  background-position:
+    calc(50% - 4px) center,
+    calc(50% - 2px) center,
+    50% center,
+    calc(50% + 2px) center;
+}
+
+/* 双按钮组（两端各一对）隐藏，只保留单个箭头 */
+::-webkit-scrollbar-button:double-button {
+  display: none;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--gb-shell);
+  background-image:
+    repeating-conic-gradient(rgba(43, 42, 36, 0.12) 0 25%, transparent 0 50%);
+  background-size: 4px 4px;
+}
+
+/*
+ * Firefox 回退（仅 Firefox）。
+ * 注意：必须用 -moz-appearance 限定。Chromium 121+ 同样支持 scrollbar-color /
+ * scrollbar-width，一旦声明就会整体接管滚动条渲染并丢弃所有 ::-webkit-scrollbar-*
+ * 伪元素样式，掌机风会直接失效（表现为 Chrome 原生圆角滚动条）。
+ */
+@supports (-moz-appearance: none) {
+  * {
+    scrollbar-color: var(--gb-mid) var(--gb-shell);
+    scrollbar-width: thin;
+  }
+}

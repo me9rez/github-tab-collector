@@ -1,0 +1,63 @@
+/* options 专属布局 */
+
+body {
+  padding: 16px 18px 40px;
+}
+
+.gb-page-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.gb-page-head h1 {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+.gb-page-sub {
+  color: var(--gb-mid);
+  margin-bottom: 16px;
+}
+
+.gb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 14px;
+  align-items: start;
+  max-width: 1100px;
+}
+
+.gb-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.gb-row > .gb-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.gb-row > .gb-field.gb-narrow {
+  flex: 0 0 160px;
+}
+
+.gb-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  max-width: 1100px;
+  flex-wrap: wrap;
+}
+
+.gb-code {
+  background: var(--gb-light);
+  border: 2px solid var(--gb-ink);
+  box-shadow: inset 2px 2px 0 var(--gb-mid);
+  padding: 0 4px;
+}

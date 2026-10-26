@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>GitHub Tab Collector</title>
+  <link rel="stylesheet" href="theme.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="gb-bar">
+    <span class="gb-led" id="status-dot"></span>
+    <span class="title grow">GITHUB TAB COLLECTOR</span>
+    <span class="url" id="status-line">…</span>
+  </header>
+
+  <section class="gb-stats" id="counts"></section>
+
+  <section class="gb-actions">
+    <button id="btn-sync" class="gb-btn primary" data-label="刷新数据">刷新数据</button>
+    <button id="btn-copy-md" class="gb-btn" data-label="复制 MD">复制 MD</button>
+    <button id="btn-copy-json" class="gb-btn" data-label="复制 JSON">复制 JSON</button>
+  </section>
+
+  <section class="gb-window gb-section">
+    <div class="gb-head">
+      <span>仓库 LIST <span id="repo-count">0</span> <span class="sub">按打开时间</span></span>
+      <a href="#" id="open-relay" target="_blank" class="link">中继面板 ▸</a>
+    </div>
+    <div class="gb-body">
+      <ul id="repo-list" class="gb-list"></ul>
+      <details class="gb-more" id="other-wrap">
+        <summary>其他 GitHub 链接（<span id="other-count">0</span>）</summary>
+        <ul id="other-list" class="gb-list" style="margin-top: 6px"></ul>
+      </details>
+    </div>
+  </section>
+
+  <footer class="gb-foot">
+    <span id="last-sync" class="t">—</span>
+    <a href="#" id="open-options">设置 ▸</a>
+  </footer>
+
+  <script src="lib/preview-shim.js"></script>
+  <script src="lib/github.js"></script>
+  <script src="lib/opentime.js"></script>
+  <script src="lib/collector.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

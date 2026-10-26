@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Tab Collector",
+  "version": "1.0.0",
+  "description": "把浏览器中打开的所有 GitHub 项目链接同步给外部 Agent（本地中继 / MCP / 剪贴板）。",
+  "minimum_chrome_version": "96",
+  "permissions": ["tabs", "storage", "alarms"],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "http://localhost/*",
+    "https://github.com/*",
+    "https://gist.github.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "GitHub Tab Collector",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_page": "options.html",
+  "incognito": "spanning"
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>GitHub Tab Collector · 设置</title>
+  <link rel="stylesheet" href="theme.css" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="gb-page-head">
+    <span class="gb-led ok" id="head-led"></span>
+    <h1>GITHUB TAB COLLECTOR</h1>
+  </div>
+  <p class="gb-page-sub">把浏览器中打开的 GitHub 项目链接交给本地中继，外部 Agent 直接查询即可。拉取模式：Agent 来要数据时，扩展才去采集标签页。</p>
+
+  <div class="gb-grid">
+    <!-- 中继服务 -->
+    <section class="gb-window">
+      <div class="gb-head"><span>中继服务 RELAY</span><span class="sub">01</span></div>
+      <div class="gb-body">
+        <div class="gb-field">
+          <label for="serverUrl">服务地址</label>
+          <input type="text" class="gb-input" id="serverUrl" placeholder="http://127.0.0.1:8788" />
+          <div class="gb-note">由 relay/server.mjs 启动，默认监听 127.0.0.1:8788。</div>
+        </div>
+
+        <div class="gb-field">
+          <label for="token">访问令牌（可留空）</label>
+          <input type="password" class="gb-input" id="token" placeholder="与 relay 的 RELAY_TOKEN 一致" />
+          <div class="gb-note">中继首次启动会把令牌写入 <span class="gb-code">data/relay-token.txt</span>，扩展也会自动读取同目录副本完成配对。</div>
+        </div>
+
+        <div class="gb-row">
+          <button id="pair" class="gb-btn magenta" type="button">一键配对</button>
+          <span id="pair-msg" class="gb-note" style="margin-top:6px"></span>
+        </div>
+
+        <div class="gb-row" style="margin-top:14px">
+          <div class="gb-field gb-narrow">
+            <label for="heartbeatMinutes">保活间隔（分钟）</label>
+            <input type="number" class="gb-input" id="heartbeatMinutes" min="1" max="60" />
+            <div class="gb-note">service worker 被回收后重新拉起轮询。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 采集范围 -->
+    <section class="gb-window">
+      <div class="gb-head"><span>采集范围 SCOPE</span><span class="sub">02</span></div>
+      <div class="gb-body">
+        <label class="gb-switch">
+          <input type="checkbox" id="includeIssues" />
+          <span class="gb-box"></span>
+          <span>包含 Issue / Pull Request 链接</span>
+        </label>
+
+        <label class="gb-switch">
+          <input type="checkbox" id="includeOtherPages" />
+          <span class="gb-box"></span>
+          <span>包含组织主页、Wiki、Gist 等其他 GitHub 页面</span>
+        </label>
+
+        <label class="gb-switch">
+          <input type="checkbox" id="includeIncognito" />
+          <span class="gb-box"></span>
+          <span>包含无痕窗口的标签页</span>
+        </label>
+
+        <label class="gb-switch">
+          <input type="checkbox" id="autoSync" />
+          <span class="gb-box"></span>
+          <span>响应查询（被 Agent 请求时自动采集标签页）</span>
+        </label>
+
+        <div class="gb-field" style="margin-top:12px">
+          <label for="excludePatterns">排除规则（每行一条，匹配 URL 即跳过）</label>
+          <textarea class="gb-input" id="excludePatterns" placeholder="https://github.com/secret-org&#10;/private/"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- 实用入口 -->
+    <section class="gb-window">
+      <div class="gb-head"><span>实用入口 TOOLS</span><span class="sub">03</span></div>
+      <div class="gb-body">
+        <div class="gb-row">
+          <a id="open-relay" class="gb-btn" href="http://127.0.0.1:8788/" target="_blank" rel="noopener">打开中继面板</a>
+          <button id="copy-config" class="gb-btn" type="button">复制配置 JSON</button>
+        </div>
+        <div class="gb-note" style="margin-top:10px">
+          中继面板是本机网页 <span class="gb-code" id="relay-url">—</span>，能看当前快照、仓库列表与 Agent 接口。
+        </div>
+        <div class="gb-note" style="margin-top:6px">
+          复制配置 JSON 会把当前设置（含访问令牌）导出成一段 JSON，方便备份或搬到另一台机器。
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="gb-btns">
+    <button id="save" class="gb-btn primary" type="button">保存并校验</button>
+    <button id="test" class="gb-btn" type="button">测试连接</button>
+    <span id="saved" class="gb-flash hide">已保存 ✓</span>
+  </div>
+
+  <script src="lib/preview-shim.js"></script>
+  <script src="lib/collector.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
