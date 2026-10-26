@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>GitHub Tab Collector · 架构图</title>
+<style>
+@font-face {
+  font-family: 'Fusion Pixel';
+  src: url('/fonts/fusion-pixel-12px-latin.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: block;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fusion Pixel';
+  src: url('/fonts/fusion-pixel-12px-zh_hans.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: block;
+  unicode-range: U+2000-206F, U+20A0-20AB, U+2113, U+2C60-2C7F, U+A720-7FF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE10-FE19, U+FE30-FE6F, U+FF00-FFEF;
+}
+
+:root {
+  --gb-shell: #c4bfb0;
+  --gb-panel: #dbd6c4;
+  --gb-light: #efecdc;
+  --gb-mid: #8b8776;
+  --gb-ink: #2b2a24;
+  --gb-green: #4d7c3f;
+  --gb-red: #b04a3a;
+  --gb-gold: #c9a227;
+  --gb-magenta: #a3346e;
+  --shadow: 3px 3px 0 var(--gb-ink);
+  --shadow-lg: 4px 4px 0 var(--gb-ink);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  width: 1080px;
+  padding: 28px 26px 24px;
+  background-color: var(--gb-shell);
+  background-image:
+    repeating-conic-gradient(var(--gb-mid) 0% 25%, transparent 0% 50%);
+  background-size: 8px 8px;
+  color: var(--gb-ink);
+  font-family: 'Fusion Pixel', 'Fusion Pixel 12px zh_hans', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+/* ---------- 顶部标题条 ---------- */
+.bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--gb-ink); color: var(--gb-light);
+  padding: 7px 12px; margin-bottom: 20px;
+  border: 2px solid var(--gb-ink);
+}
+.bar .t { letter-spacing: 1px; }
+.bar .t b { color: var(--gb-gold); font-weight: 400; }
+.bar .r { color: var(--gb-mid); }
+
+/* ---------- 三列 ---------- */
+.flow {
+  display: grid;
+  grid-template-columns: 240px 154px 240px 154px 240px;
+  align-items: start;
+  gap: 0;
+}
+
+/* ---------- 盒子 ---------- */
+.box {
+  background: var(--gb-light);
+  border: 2px solid var(--gb-ink);
+  box-shadow: var(--shadow);
+  padding: 0 0 8px;
+}
+.box > h3 {
+  background: var(--gb-ink); color: var(--gb-light);
+  font-size: 12px; font-weight: 400; letter-spacing: 1px;
+  padding: 5px 10px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.box > h3 .tag { color: var(--gb-gold); }
+.box .inner { padding: 9px 10px 2px; }
+.box .inner p { margin-bottom: 7px; }
+.box .inner p:last-child { margin-bottom: 0; }
+
+.k { color: var(--gb-green); }
+.g { color: var(--gb-gold); }
+.m { color: var(--gb-magenta); }
+.dim { color: var(--gb-mid); }
+
+ul.pts { list-style: none; }
+ul.pts li { padding-left: 12px; position: relative; margin-bottom: 5px; }
+ul.pts li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 4px; height: 4px; background: var(--gb-ink);
+}
+ul.pts li code {
+  background: var(--gb-panel); border: 1px solid var(--gb-ink);
+  padding: 0 3px;
+}
+
+/* ---------- 箭头列 ---------- */
+.lane {
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 14px; padding: 26px 0;
+}
+.arrow { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 100%; }
+.arrow .cap {
+  background: var(--gb-panel); border: 2px solid var(--gb-ink);
+  padding: 3px 5px; font-size: 11px; line-height: 1.45;
+  width: 100%; text-align: center;
+}
+.arrow .cap i { font-style: normal; color: var(--gb-magenta); }
+.arrow .cap b { font-weight: 400; color: var(--gb-green); }
+.shaft { display: flex; align-items: flex-start; }
+.shaft .bar-line { width: 42px; height: 4px; background: var(--gb-ink); margin-top: 8px; }
+/* 像素三角头：4px 一格，右指。第 3 行是尖端，箭杆对齐这一行 */
+.phead {
+  width: 4px; height: 4px; background: var(--gb-ink);
+  box-shadow:
+    0 4px 0 var(--gb-ink),
+    4px 4px 0 var(--gb-ink),
+    0 8px 0 var(--gb-ink),
+    4px 8px 0 var(--gb-ink),
+    8px 8px 0 var(--gb-ink),
+    0 12px 0 var(--gb-ink),
+    4px 12px 0 var(--gb-ink),
+    0 16px 0 var(--gb-ink);
+}
+.arrow.left .shaft { flex-direction: row-reverse; margin-left: 10px; }
+.arrow.left .phead { transform: scaleX(-1); }
+
+/* ---------- 底部数据条 ---------- */
+.dataline {
+  margin-top: 20px;
+  display: flex; align-items: stretch; gap: 0;
+  background: var(--gb-panel); border: 2px solid var(--gb-ink);
+  box-shadow: var(--shadow);
+}
+.dataline .seg {
+  padding: 8px 14px; border-right: 2px solid var(--gb-ink);
+  display: flex; flex-direction: column; gap: 2px; flex: 1 1 0;
+}
+.dataline .seg:last-child { border-right: 0; }
+.dataline .seg .k1 { color: var(--gb-green); font-size: 11px; }
+.dataline .seg .v1 { font-size: 12px; }
+.dataline .note {
+  margin-left: auto; padding: 8px 14px; text-align: right;
+  color: var(--gb-mid); font-size: 11px; line-height: 1.6;
+  border-left: 2px solid var(--gb-ink);
+}
+
+/* ---------- 页脚说明 ---------- */
+.foot {
+  margin-top: 24px;
+  background: var(--gb-panel);
+  border: 2px solid var(--gb-ink);
+  box-shadow: var(--shadow);
+  padding: 9px 12px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.foot .chip {
+  background: var(--gb-ink); color: var(--gb-light);
+  padding: 3px 8px; font-size: 11px; white-space: nowrap;
+}
+.foot .txt { font-size: 12px; line-height: 1.9; color: var(--gb-ink); }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="t">■ GITHUB TAB COLLECTOR <b>· 架构图</b></div>
+  <div class="r">拉取模式 PULL-ONLY</div>
+</div>
+
+<div class="flow">
+
+  <!-- 扩展 -->
+  <div class="box">
+    <h3>浏览器扩展 <span class="tag">MV3</span></h3>
+    <div class="inner">
+      <p class="g">Chrome / Edge 扩展</p>
+      <ul class="pts">
+        <li>后台 service worker <b>待命</b></li>
+        <li>长轮询 <code>GET /poll</code> 挂起</li>
+        <li>扫描 GitHub 标签页 URL</li>
+        <li>自建打开时间追踪<br><span class="dim">tabs.onCreated → storage</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 箭头 1 -->
+  <div class="lane">
+    <div class="arrow left">
+      <div class="cap"><i>②</i> {action:<br>"collect"}<br>中继下发采集</div>
+      <div class="shaft"><div class="bar-line"></div><div class="phead"></div></div>
+    </div>
+    <div class="arrow">
+      <div class="cap"><i>③</i> POST /ingest<br>回传快照</div>
+      <div class="shaft"><div class="bar-line"></div><div class="phead"></div></div>
+    </div>
+  </div>
+
+  <!-- 中继 -->
+  <div class="box">
+    <h3>本地中继 <span class="tag">:8788</span></h3>
+    <div class="inner">
+      <p class="g">relay/server.mjs</p>
+      <ul class="pts">
+        <li>零依赖 Node 服务</li>
+        <li>只监听 <code>127.0.0.1</code></li>
+        <li>网页面板（像素风）</li>
+        <li>写令牌到扩展目录<br><span class="dim">零握手自动配对</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 箭头 2 -->
+  <div class="lane">
+    <div class="arrow left">
+      <div class="cap"><i>①</i> GET /links<br>?refresh=1<br>Agent 主动来取</div>
+      <div class="shaft"><div class="bar-line"></div><div class="phead"></div></div>
+    </div>
+    <div class="arrow">
+      <div class="cap"><i>④</i> JSON /<br>Markdown<br>返回快照</div>
+      <div class="shaft"><div class="bar-line"></div><div class="phead"></div></div>
+    </div>
+  </div>
+
+  <!-- Agent -->
+  <div class="box">
+    <h3>外部 Agent <span class="tag">MCP / HTTP</span></h3>
+    <div class="inner">
+      <p class="g">Claude Code / Cursor 等</p>
+      <ul class="pts">
+        <li>MCP stdio 三个工具</li>
+        <li>HTTP <code>/links</code> <code>/repos</code></li>
+        <li>Markdown <code>/links.md</code></li>
+        <li>中继不可用时读本地文件</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="dataline">
+  <div class="seg"><span class="k1">本地数据</span><span class="v1">data/github-tabs.json</span></div>
+  <div class="seg"><span class="k1">可读输出</span><span class="v1">data/github-links.md</span></div>
+  <div class="seg"><span class="k1">配对令牌</span><span class="v1">data/relay-token.txt</span></div>
+  <div class="seg"><span class="k1">中继端口</span><span class="v1">127.0.0.1:8788</span></div>
+  <div class="note">没有 Agent 查询时<br>全程零流量 · 零外发</div>
+</div>
+
+<div class="foot">
+  <div class="chip">① → ④</div>
+  <div class="txt">
+    一次完整取数：Agent 调 <span class="m">/links?refresh=1</span> → 中继把「去采集」交给正在长轮询的扩展 → 扩展扫描标签页回传快照 → 中继把新快照返回给 Agent。<br>
+    扩展全程只挂起待命，<b>不主动推送</b>；扩展没响应时中继返回 <span class="m">stale: true</span> + 上一次快照，Agent 不会卡死。
+  </div>
+</div>
+
+</body>
+</html>

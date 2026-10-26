@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..', 'extension');
+const DOCS = path.resolve(__dirname, '..', 'docs');
 const PORT = Number(process.argv[2] || process.env.PORT || 8899);
 const HOST = '127.0.0.1';
 
@@ -34,8 +35,15 @@ const server = http.createServer((req, res) => {
   let rel = decodeURIComponent(url.pathname);
   if (rel === '/' || rel === '') rel = '/popup.html';
 
-  const filePath = path.join(ROOT, path.normalize(rel).replace(/^(\.\.[/\\])+/, ''));
-  if (!filePath.startsWith(ROOT)) {
+  // /docs/** 映射到仓库根下的 docs/（文档截图用的固定数据）
+  let base = ROOT;
+  if (rel === '/docs' || rel.startsWith('/docs/')) {
+    base = DOCS;
+    rel = rel.slice('/docs'.length) || '/';
+  }
+
+  const filePath = path.join(base, path.normalize(rel).replace(/^(\.\.[/\\])+/, ''));
+  if (!filePath.startsWith(base)) {
     res.writeHead(403).end('forbidden');
     return;
   }

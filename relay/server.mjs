@@ -29,6 +29,8 @@ const ROOT = path.resolve(__dirname, '..');
 
 const PORT = Number(process.env.PORT || 8788);
 const HOST = process.env.HOST || '127.0.0.1';
+/** 实际绑定的端口（PORT=0 时由系统随机分配，面板横幅要用真实值） */
+let boundPort = PORT;
 const DATA_DIR = path.resolve(ROOT, process.env.DATA_DIR || 'data');
 const POLL_WAIT_MS = Number(process.env.POLL_WAIT_MS || 20000);
 const REFRESH_WAIT_MS = Number(process.env.REFRESH_WAIT_MS || 25000);
@@ -461,7 +463,7 @@ function dashboardHtml() {
     * { scrollbar-color:var(--mid) var(--shell); scrollbar-width:thin }
   }
 </style></head><body>
-<div class="bar"><span class="led"></span><span>GITHUB TAB COLLECTOR</span><span class="u">RELAY · ${escapeHtml(HOST)}:${PORT}</span></div>
+<div class="bar"><span class="led"></span><span>GITHUB TAB COLLECTOR</span><span class="u">RELAY · ${escapeHtml(HOST)}:${boundPort}</span></div>
 
 <p class="sub" style="margin-bottom:14px">最后接收：${escapeHtml(state.receivedAt || '尚未收到快照')} · 原因：${escapeHtml(state.reason || '-')} · 模式：拉取（Agent 查询时才采集）</p>
 
@@ -685,6 +687,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, HOST, () => {
   const actualPort = server.address().port;
+  boundPort = actualPort;
   try {
     fs.writeFileSync(PID_FILE, String(process.pid), 'utf8');
   } catch {

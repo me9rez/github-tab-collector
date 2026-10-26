@@ -108,6 +108,38 @@
     ['xerj-org/xerj', '本地优先搜索引擎 + MCP server（Rust 单文件）']
   ];
 
+  /**
+   * 演示模式：?demo=1
+   * 读取 docs/fixtures/demo-snapshot.json（一份虚构数据），用于文档截图，
+   * 避免 README 里出现真实的浏览记录。
+   */
+  var isDemo = /[?&]demo=1/.test(window.location.search);
+  var nativeFetch = window.fetch.bind(window);
+  var demoPromise = null;
+
+  if (isDemo) {
+    demoPromise = nativeFetch('/docs/fixtures/demo-snapshot.json', { cache: 'no-store' })
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (snap) {
+        // JSON 里只存了 ISO 时间，这里补上 epoch 毫秒（排序用）
+        [].concat(snap.repos || [], snap.items || []).forEach(function (e) {
+          if (e.openedAtMs === undefined && e.openedAt) {
+            var ms = Date.parse(e.openedAt);
+            e.openedAtMs = isNaN(ms) ? null : ms;
+          }
+        });
+        snap.receivedAt = snap.generatedAt;
+        snap.refreshed = true;
+        snap.stale = false;
+        return snap;
+      })
+      .catch(function () {
+        return null;
+      });
+  }
+
   function mockSnapshot() {
     // 模拟打开时间：从 3 小时前开始，每个仓库往后 11 分钟
     var base = Date.now() - 3 * 60 * 60 * 1000;
@@ -193,6 +225,13 @@
   window.fetch = function (url, opts) {
     var s = String(url && url.url ? url.url : url);
     if (s.indexOf('/links') !== -1) {
+      if (demoPromise) {
+        return demoPromise.then(function (snap) {
+          return new Response(JSON.stringify(snap || mockSnapshot()), {
+            headers: { 'Content-Type': 'application/json' }
+          });
+        });
+      }
       return Promise.resolve(
         new Response(JSON.stringify(mockSnapshot()), { headers: { 'Content-Type': 'application/json' } })
       );

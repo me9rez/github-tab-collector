@@ -5,21 +5,33 @@
 
 **拉取模式（默认）：扩展不主动推送，Agent 主动来取。**
 
-```
-┌──────────────┐   ① 长轮询挂起等待      ┌──────────────┐              ┌───────────┐
-│ Chrome / Edge│ ─────────────────────► │ 本地中继 8788 │ ◄─────────── │  扩展      │
-│  扩展         │   GET /poll            │  server.mjs   │  ② POST      │ (待命)    │
-│              │ ◄───────────────────── │              │  /ingest     │           │
-└──────────────┘   {action:"collect"}    └──────┬───────┘              └───────────┘
-                                                │
-                     ③ Agent 查询 /links?refresh=1 │
-                                                ▼
-                                   data/github-tabs.json
-                                   data/github-links.md
-```
+<img src="docs/images/architecture.png" alt="架构图：扩展、中继、Agent 三方交互与数据流" width="900">
 
 流程：Agent 调 `/links?refresh=1` → 中继把一个"去采集"的指令交给正在长轮询的扩展 →
 扩展扫描标签页并回传 → 中继把新快照返回给 Agent。全程只有 Agent 发起请求时才有流量。
+
+## 界面预览
+
+> 下面所有截图都用**虚构的演示数据**（仓库名、标签页标题均为示例），
+> 不含任何真实的浏览记录——放心看，也放心放进公开仓库。
+
+### 扩展弹窗
+
+看到当前打开的仓库、Issue / PR 统计，以及每个仓库的**标签页打开时间**。
+
+<img src="docs/images/popup.png" alt="扩展弹窗：仓库列表、统计与打开时间" width="500">
+
+### 设置页
+
+中继服务、采集范围、实用入口三块；「保存并校验」会自动做一次端到端连通性检查。
+
+<img src="docs/images/options.png" alt="设置页：中继服务、采集范围、实用入口" width="800">
+
+### 中继面板
+
+本地网页面板：仓库列表（含打开时间）、其他 GitHub 链接、以及 Agent 可以直接调的接口清单。
+
+<img src="docs/images/relay-dashboard.png" alt="中继面板：仓库列表、打开时间与 Agent 接口" width="880">
 
 ## 目录结构
 
@@ -43,7 +55,9 @@ github-tab-collector/
 ├── mcp/
 │   └── github-links-mcp.mjs  # MCP stdio 服务（零依赖）
 ├── tools/
-│   └── preview.mjs       # 预览服务器：不开扩展也能看 UI
+│   ├── preview.mjs       # 预览服务器：不开扩展也能看 UI
+│   └── screenshot.mjs    # 截图用的假中继（注入演示数据）
+├── docs/                 # README 配图：演示快照 + 截图
 ├── data/                 # 运行时生成：JSON 快照 / Markdown / 令牌 / PID
 ├── test/                 # 冒烟测试（隔离中继，不污染真实数据）
 ├── start-relay.cmd       # Windows 一键启动中继
@@ -90,6 +104,14 @@ node tools/preview.mjs
 ```
 
 预览模式会加载 `lib/preview-shim.js`，用模拟的 chrome API 和示例数据渲染，不会连真实中继。
+
+加 `?demo=1` 会切到 `docs/fixtures/demo-snapshot.json` 这份**完全虚构**的演示快照
+（README 里的截图就是这么来的），可以随便截给别人看：
+
+```
+http://127.0.0.1:8899/popup.html?demo=1
+http://127.0.0.1:8899/options.html?demo=1
+```
 
 ## 一、安装扩展
 
@@ -204,7 +226,8 @@ curl "http://127.0.0.1:8788/health"
 PowerShell：
 
 ```powershell
-$r = Invoke-RestMethod "http://127.0.0.1:8788/links?refresh=1&token=c07eb28283c71039113b1649386f24dbcfaa72b903b6a2dc"
+$token = (Get-Content .\data\relay-token.txt).Trim()
+$r = Invoke-RestMethod "http://127.0.0.1:8788/links?refresh=1&token=$token"
 $r.repos | Select-Object fullName, url
 ```
 
